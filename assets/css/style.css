@@ -1,16 +1,26 @@
-/* --- 全局变量与重置 --- */
+/* =========================================
+   1. 全局变量与重置 (Variables & Reset)
+   ========================================= */
 :root {
-  --color-bg: #ffffff;
-  --color-text-primary: #1f2328; /* 接近纯黑 */
-  --color-text-secondary: #656d76; /* 次级灰 */
-  --color-link: #0969da;
-  --color-border: #d0d7de;
-  --color-btn-black: #24292f;
-  --color-btn-hover: #111;
+  /* 颜色系统：极简学术风 */
+  --bg-body: #ffffff;            /* 纯白背景 */
+  --bg-card: #ffffff;
+  --bg-hover: #f6f8fa;           /* 悬停时的浅灰 */
   
-  --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  --text-main: #1f2328;          /* 近纯黑，正文色 */
+  --text-sub: #656d76;           /* 次级灰，用于日期/简介 */
+  --text-link: #0969da;          /* 学术蓝 */
+  
+  --border-color: #d0d7de;       /* 边框灰 */
+  --border-hover: #0969da;       /* 悬停边框色 */
+
+  /* 尺寸系统 */
+  --container-width: 1080px;     /* 内容区最大宽度 */
   --header-height: 64px;
-  --container-width: 1080px; /* 稍微调窄一点更精致 */
+  --sidebar-width: 280px;
+  
+  /* 字体系统 */
+  --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
 }
 
 * {
@@ -19,27 +29,37 @@
 
 body {
   margin: 0;
+  padding: 0;
   font-family: var(--font-stack);
-  background-color: var(--color-bg);
-  color: var(--color-text-primary);
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
+  background-color: var(--bg-body);
+  color: var(--text-main);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased; /* 让字体在 Mac 上更清晰 */
 }
 
-a { color: var(--color-link); text-decoration: none; }
-a:hover { text-decoration: underline; }
+a {
+  color: var(--text-link);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
 
-/* --- Header (极简风格) --- */
+a:hover {
+  text-decoration: underline;
+}
+
+/* =========================================
+   2. 顶部导航 (Header)
+   ========================================= */
 header {
   height: var(--header-height);
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.85); /* 半透明 */
+  backdrop-filter: blur(12px);           /* 毛玻璃效果 */
+  position: sticky;                      /* 粘性定位 */
+  top: 0;
+  z-index: 100;
   display: flex;
   align-items: center;
-  position: sticky;
-  top: 0;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(8px);
-  z-index: 10;
 }
 
 .header-inner {
@@ -54,185 +74,307 @@ header {
 
 .brand .name {
   font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--color-text-primary);
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.5px;
 }
 
-/* --- 核心布局 (CSS Grid) --- */
+.brand .name:hover {
+  text-decoration: none;
+  opacity: 0.8;
+}
+
+/* 顶部右侧按钮样式 */
+.btn-black-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
+  background: transparent;
+}
+
+.btn-black-outline:hover {
+  background-color: var(--bg-hover);
+  border-color: #8c959f;
+  text-decoration: none;
+}
+
+.icon-btn svg {
+  fill: currentColor;
+}
+
+/* =========================================
+   3. 核心布局 (Grid Layout)
+   ========================================= */
+.container {
+  max-width: var(--container-width);
+  margin: 40px auto 80px; /* 上边距 40px, 下边距 80px */
+  padding: 0 24px;
+}
+
 .layout-grid {
   display: grid;
-  /* 关键：定义两列，右侧固定宽度，左侧自适应 */
-  grid-template-columns: 1fr 280px;
-  /* 调整列间距 */
-  gap: 64px;
-  max-width: var(--container-width);
-  margin: 40px auto 60px;
-  padding: 0 24px;
-  align-items: start; /* 顶部对齐 */
+  /* 左侧自适应，右侧固定 280px */
+  grid-template-columns: 1fr var(--sidebar-width);
+  gap: 64px; /* 栏间距 */
+  align-items: start;
 }
 
-/* --- 右侧侧边栏 (Profile) - 修复排版问题 --- */
+/* =========================================
+   4. 列表视图 (List View)
+   ========================================= */
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 0;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-main);
+}
+
+#list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* 卡片间距 */
+}
+
+/* 笔记卡片样式 */
+.note-card {
+  display: block; /* 让整个卡片可点击 */
+  padding: 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.note-card:hover {
+  border-color: var(--border-hover);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px); /* 轻微上浮 */
+  text-decoration: none;
+}
+
+.note-title {
+  margin: 0 0 10px 0;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--text-main);
+  line-height: 1.3;
+}
+
+/* 卡片悬停时标题变色 */
+.note-card:hover .note-title {
+  color: var(--text-link);
+}
+
+.note-meta {
+  font-size: 0.85rem;
+  color: var(--text-sub);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tag {
+  background: #eff1f3;
+  color: var(--text-sub);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.note-excerpt {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #444;
+  line-height: 1.6;
+}
+
+/* 加载状态 */
+.loading {
+  padding: 40px;
+  text-align: center;
+  color: var(--text-sub);
+  font-style: italic;
+}
+
+/* =========================================
+   5. 详情视图 (Detail View)
+   ========================================= */
+.hidden {
+  display: none !important;
+}
+
+/* 返回按钮 */
+.btn-text-sm {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-bottom: 24px;
+  font-size: 0.9rem;
+  color: var(--text-sub);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+
+.btn-text-sm:hover {
+  color: var(--text-link);
+  text-decoration: none;
+}
+
+/* Markdown 内容区修复 */
+.markdown-body {
+  /* 强制覆盖 markdown 库的默认样式，使其融入背景 */
+  background-color: transparent !important;
+  font-family: var(--font-stack) !important;
+  color: var(--text-main) !important;
+  padding: 0 !important;
+}
+
+/* 针对深色模式系统的强制覆盖（防止变黑） */
+@media (prefers-color-scheme: dark) {
+  .markdown-body {
+    background-color: transparent !important;
+    color: var(--text-main) !important;
+  }
+}
+
+/* =========================================
+   6. 侧边栏 (Sidebar Profile)
+   ========================================= */
 .sidebar {
-    /* 确保侧边栏不会被压缩 */
-    min-width: 280px;
+  /* 确保侧边栏不被压缩 */
+  min-width: var(--sidebar-width); 
 }
 
 .profile-container {
-  display: flex;
-  flex-direction: column;
-  /* 关键：修复图片错位的核心属性 */
-  align-items: flex-start; 
-  gap: 24px;
+  position: sticky; /* 侧边栏随页面滚动 */
+  top: 100px;       /* 距离顶部 header 的距离 */
 }
 
-/* 头像容器和图片样式修复 */
 .profile-avatar {
-  width: 100%;
-  /* 限制最大宽度，防止过大 */
-  max-width: 200px; 
+  margin-bottom: 20px;
 }
 
-#avatar-img {
+.profile-avatar img {
   width: 100%;
+  max-width: 200px;
   height: auto;
-  border-radius: 8px; /* 方形圆角，符合学术风格 */
+  border-radius: 8px; /* 轻微圆角，学术感 */
+  border: 1px solid var(--border-color);
   display: block;
-  border: 1px solid var(--color-border);
 }
 
 .profile-info {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  margin-bottom: 24px;
 }
 
 .profile-name {
-  margin: 0;
-  font-size: 2rem;
+  margin: 0 0 8px 0;
+  font-size: 1.75rem;
   font-weight: 700;
+  color: var(--text-main);
   line-height: 1.2;
 }
 
-.profile-bio {
-  color: var(--color-text-secondary);
-  font-size: 0.95rem;
-  line-height: 1.6;
-}
-.profile-bio p { margin: 4px 0; }
-.profile-title { font-weight: 500; color: var(--color-text-primary); }
-
-.profile-links {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
+.profile-title {
+  margin: 0 0 4px 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--text-main);
 }
 
-.sidebar-section { margin-top: 40px; }
-.sidebar-title { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--color-text-secondary); margin-bottom: 16px; }
-.sidebar-list { list-style: none; padding: 0; margin: 0; }
-.sidebar-list li { margin-bottom: 8px; }
-.sidebar-list a { color: var(--color-text-secondary); }
-.sidebar-list a:hover { color: var(--color-link); }
-
-
-/* --- 左侧内容区 (Main Content) --- */
-/* 强制 Markdown 内容区样式，去除任何可能的背景和边框 */
-.markdown-body.academic-list {
-  background: none !important;
-  border: none !important;
-  padding: 0 !important;
-  font-family: var(--font-stack) !important;
-  color: var(--color-text-primary) !important;
+.profile-research-interests {
+  margin: 12px 0 0 0;
+  font-size: 0.9rem;
+  color: var(--text-sub);
+  line-height: 1.5;
 }
-/* 针对学术列表的特殊优化 */
-.markdown-body.academic-list h2 {
-    border-bottom: 2px solid var(--color-border);
-    padding-bottom: 8px;
-    margin-top: 40px;
-    margin-bottom: 24px;
-    font-size: 1.5rem;
+
+/* =========================================
+   7. 动画效果 (Animations)
+   ========================================= */
+.fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
 }
-.markdown-body.academic-list p {
-    margin-bottom: 1.5em;
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
-/* 模拟论文标题的加粗效果 */
-.markdown-body.academic-list strong { font-weight: 600; }
 
-
-/* --- 编辑器模式样式 --- */
-.hidden { display: none !important; }
-.editor-container { border: 1px solid var(--color-border); border-radius: 6px; background: #f6f8fa; }
-.editor-toolbar {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 12px 16px; border-bottom: 1px solid var(--color-border);
-    background: #fff; border-top-left-radius: 6px; border-top-right-radius: 6px;
-}
-.toolbar-title { font-weight: 600; font-size: 0.9rem; }
-.toolbar-actions { display: flex; gap: 8px; }
-.editor-wrapper { display: flex; height: 60vh; background: #fff; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px;}
-textarea#markdown-input {
-    width: 50%; height: 100%; border: none; border-right: 1px solid var(--color-border);
-    padding: 20px; resize: none; outline: none; font-family: ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
-    font-size: 14px; background: #fff;
-}
-#preview { width: 50%; height: 100%; padding: 20px; overflow-y: auto; background: #fff; }
-
-
-/* --- 按钮组件 (学术/GitHub 风格) --- */
-.btn {
-  display: inline-flex; align-items: center; justify-content: center;
-  cursor: pointer; user-select: none; border-radius: 6px;
-  border: 1px solid transparent; font-weight: 600; line-height: 20px;
-  white-space: nowrap; transition: 0.2s cubic-bezier(0.3, 0, 0.5, 1);
-  text-decoration: none !important;
-}
-.icon-btn { gap: 6px; }
-.icon-btn svg { fill: currentColor; }
-
-/* 大按钮 */
-.btn-black-outline {
-  padding: 6px 14px; font-size: 14px;
-  color: var(--color-btn-black); background-color: transparent;
-  border-color: var(--color-border);
-  box-shadow: 0 1px 0 rgba(27,31,36,0.04);
-}
-.btn-black-outline:hover { background-color: #f3f4f6; border-color: #8c959f; }
-
-/* 小按钮 */
-.btn-black-sm {
-  padding: 4px 10px; font-size: 12px;
-  color: #fff; background-color: var(--color-btn-black);
-}
-.btn-black-sm:hover { background-color: var(--color-btn-hover); }
-
-.btn-outline-sm {
-    padding: 4px 10px; font-size: 12px;
-    color: var(--color-btn-black); background-color: transparent;
-    border: 1px solid var(--color-border);
-}
-.btn-outline-sm:hover { background-color: #f6f8fa; }
-
-.btn-text-sm {
-    padding: 4px 10px; font-size: 12px;
-    color: #cf222e; background: none;
-}
-.btn-text-sm:hover { text-decoration: underline !important; }
-
-
-/* --- 移动端响应式 --- */
+/* =========================================
+   8. 移动端适配 (Responsive)
+   ========================================= */
 @media (max-width: 850px) {
   .layout-grid {
-    grid-template-columns: 1fr; /* 单列 */
+    grid-template-columns: 1fr; /* 变为单列 */
     gap: 40px;
   }
-  /* 在手机上，把个人信息栏放到内容上方 */
-  .sidebar { order: -1; min-width: auto; }
-  /* 调整手机上的头像和信息布局为横向 */
-  .profile-container { flex-direction: row; align-items: center; }
-  .profile-avatar { max-width: 120px; }
-  .profile-info { gap: 8px; }
-  .profile-name { font-size: 1.5rem; }
+
+  /* 在手机上，让侧边栏显示在内容上方 (order: -1) 
+     或者下方 (默认)。通常个人主页建议放上面展示身份。 */
+  .sidebar {
+    order: -1;
+    width: 100%;
+    min-width: auto;
+    border-bottom: 1px dashed var(--border-color);
+    padding-bottom: 30px;
+    margin-bottom: 10px;
+  }
+
+  .profile-container {
+    position: static; /* 取消粘性定位 */
+    display: flex;
+    flex-direction: row; /* 横向排列头像和信息 */
+    align-items: center;
+    gap: 20px;
+  }
+
+  .profile-avatar {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+
+  .profile-avatar img {
+    width: 100px;
+    height: 100px;
+  }
+
+  .profile-name {
+    font-size: 1.5rem;
+  }
   
-  .editor-wrapper { flex-direction: column; height: 80vh; }
-  textarea#markdown-input, #preview { width: 100%; height: 50%; }
+  .profile-research-interests {
+    display: none; /* 手机上为了简洁可以隐藏详细介绍，或者保留 */
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-container {
+    flex-direction: column; /* 屏幕超小时恢复纵向 */
+    align-items: flex-start;
+  }
+  
+  .profile-research-interests {
+    display: block; /* 恢复显示 */
+  }
 }

@@ -1,116 +1,133 @@
-// 初始化 markdown-it
+// 初始化 markdown解析器
 const md = window.markdownit({
   html: true,
   linkify: true,
   typographer: true
 });
 
-// 获取元素
-const viewMode = document.getElementById("view-mode");
-const editMode = document.getElementById("edit-mode");
-const content = document.getElementById("content");
-const input = document.getElementById("markdown-input");
-const preview = document.getElementById("preview");
+// --- 1. 文章数据配置 (这是你的CMS) ---
+// 你每写一篇新 md 文件，就在这里加一条记录
+const posts = [
+  {
+    id: "post-1", // 唯一ID
+    title: "Understanding Diffusion Models: A Comprehensive Guide",
+    date: "2026-01-12",
+    tags: ["Diffusion", "Generative AI"],
+    file: "posts/diffusion-note.md", // 对应的 md 文件路径
+    excerpt: "My reading notes on the fundamental principles of DDPM and DDIM, explaining the forward and reverse processes..."
+  },
+  {
+    id: "post-2", // 示例第二篇
+    title: "Review: EMO-Avatar for Emotional Support",
+    date: "2025-12-28",
+    tags: ["Avatar", "Paper Review"],
+    file: "posts/emo-avatar.md",
+    excerpt: "An in-depth analysis of the EMO-Avatar framework presented at MM 2025, focusing on its LLM-orchestrated agent system."
+  }
+];
 
-// 按钮
-const editBtn = document.getElementById("editBtn");
-const saveBtn = document.getElementById("saveBtn");
-const cancelBtn = document.getElementById("cancelBtn");
-const downloadBtn = document.getElementById("downloadBtn");
+// 获取 DOM 元素
+const listSection = document.getElementById("post-list");
+const listContainer = document.getElementById("list-container");
+const detailSection = document.getElementById("post-detail");
+const markdownViewer = document.getElementById("markdown-viewer");
+const backBtn = document.getElementById("backBtn");
 
-let currentMarkdown = "";
-
-// 1. 初始化
+// --- 2. 初始化：渲染列表 ---
 function init() {
-  // --- 重要：优化后的学术列表 Markdown 模版 ---
-  // 使用标准的 Markdown 语法来模拟学术引用格式
-  const defaultContent = `
-## Publications
+  renderList();
+  
+  // 处理浏览器的后退按钮
+  window.onpopstate = (event) => {
+    if (event.state && event.state.view === "detail") {
+      loadPost(event.state.postId);
+    } else {
+      showList();
+    }
+  };
 
-**EMO-Avatar: An LLM-Agent-Orchestrated Framework for Multimodal Emotional Support in Human Animation**
-*Keqi Chen, **Wenxin Fu**, Qihang Lu, Zekai Sun, Yizhong Geng, Yi Liu, Puyuan Guo, Yingming Gao, Ya Li*
-MM 2025
-[PDF] [Code] [Project Page]
+  // 检查 URL 是否带参数 (例如 index.html?post=post-1)
+  const urlParams = new URLSearchParams(window.location.search);
+  const postId = urlParams.get('post');
+  if (postId) {
+    loadPost(postId);
+  }
+}
 
-**Another Awesome Paper Title for CVPR**
-***Wenxin Fu***, *Co-author Name, Another Author*
-CVPR 2024 (In submission)
-To address the empathy gap in chatbots, we propose a novel framework...
+// 渲染文章卡片列表
+function renderList() {
+  listContainer.innerHTML = "";
+  
+  posts.forEach(post => {
+    // 创建卡片 DOM
+    const card = document.createElement("div");
+    card.className = "note-card";
+    
+    // 生成标签 HTML
+    const tagsHtml = post.tags.map(tag => `<span class="tag">#${tag}</span>`).join(" ");
+    
+    card.innerHTML = `
+      <h3 class="note-title">${post.title}</h3>
+      <div class="note-meta">
+        <span>📅 ${post.date}</span>
+        ${tagsHtml}
+      </div>
+      <p class="note-excerpt">${post.excerpt}</p>
+    `;
+    
+    // 点击事件：跳转详情
+    card.onclick = () => {
+      // 修改 URL 但不刷新页面
+      const newUrl = `${window.location.pathname}?post=${post.id}`;
+      history.pushState({ view: "detail", postId: post.id }, "", newUrl);
+      loadPost(post.id);
+    };
+    
+    listContainer.appendChild(card);
+  });
+}
 
-## Recent Posts
+// --- 3. 详情页逻辑 ---
 
-- **2026-01-12**: [Setup my new academic homepage based on Markdown](https://github.com)
-- **2025-12-20**: Year-end summary and future research plans.
-`;
+// 加载并显示文章
+function loadPost(postId) {
+  const post = posts.find(p => p.id === postId);
+  if (!post) return; // 找不到文章
 
-  // 尝试加载外部文件，失败则使用模版
-  fetch("posts/2026-01-12-demo.md")
+  // 切换视图
+  listSection.classList.add("hidden");
+  detailSection.classList.remove("hidden");
+  window.scrollTo(0, 0); // 回到顶部
+
+  markdownViewer.innerHTML = `<div class="loading">Loading content...</div>`;
+
+  // Fetch md 文件
+  fetch(post.file)
     .then(res => {
-      if (!res.ok) throw new Error("File not found");
+      if (!res.ok) throw new Error("Post not found");
       return res.text();
     })
     .then(text => {
-      currentMarkdown = text;
-      render();
+      // 渲染 Markdown
+      // 可以在这里拼接标题，让 md 文件里不用重复写标题
+      const contentWithTitle = `# ${post.title}\n\n` + text;
+      markdownViewer.innerHTML = md.render(contentWithTitle);
     })
     .catch(err => {
-      console.log("Loading template content (no external file found).");
-      currentMarkdown = defaultContent;
-      render();
+      markdownViewer.innerHTML = `<p class="error">Error loading post: ${err.message}</p>`;
     });
 }
 
-// 2. 渲染函数
-function render() {
-  content.innerHTML = md.render(currentMarkdown);
-  // 编辑器里的内容也要同步
-  input.value = currentMarkdown;
-  preview.innerHTML = md.render(currentMarkdown);
+// 返回列表
+function showList() {
+  detailSection.classList.add("hidden");
+  listSection.classList.remove("hidden");
+  // 清除 URL 参数
+  history.pushState({ view: "list" }, "", window.location.pathname);
 }
 
-// 3. 交互逻辑
-editBtn.onclick = () => {
-  viewMode.classList.add("hidden");
-  editMode.classList.remove("hidden");
-  editBtn.style.display = "none"; // 隐藏 Header 上的编辑按钮
-  render();
-};
-
-input.oninput = () => {
-  preview.innerHTML = md.render(input.value);
-};
-
-saveBtn.onclick = () => {
-  currentMarkdown = input.value;
-  content.innerHTML = md.render(currentMarkdown);
-  exitEditMode();
-};
-
-cancelBtn.onclick = () => {
-  // 恢复为修改前的内容
-  input.value = currentMarkdown;
-  exitEditMode();
-};
-
-function exitEditMode() {
-  editMode.classList.add("hidden");
-  viewMode.classList.remove("hidden");
-  editBtn.style.display = "inline-flex";
-}
-
-downloadBtn.onclick = () => {
-  const text = input.value;
-  const blob = new Blob([text], { type: "text/markdown" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  // 使用当前日期作为文件名
-  const date = new Date().toISOString().slice(0, 10);
-  a.download = `content-${date}.md`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-};
+// 绑定返回按钮
+backBtn.onclick = showList;
 
 // 启动
 init();
