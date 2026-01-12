@@ -23,23 +23,44 @@ const preview = document.getElementById("preview");
 // 全局变量存储当前 Markdown
 let currentMarkdown = "";
 
-// 1. 初始化：加载示例 Markdown
-// 注意：如果你直接双击打开 html 文件，fetch 可能会被浏览器拦截（CORS 错误）。
-// 建议使用 VS Code 的 "Live Server" 插件或 Python 开启本地服务器。
 function init() {
-  const defaultText = "# 欢迎使用 Markdown 编辑器\n\n如果无法加载外部文件，这是默认显示的内容。\n\n## 功能列表\n- 左侧编辑\n- 右侧实时预览";
+  // 设置一个默认的欢迎文本，当 fetch 失败时显示
+  const defaultText = `# 欢迎来到我的 Markdown 空间
+
+这里是默认显示的内容。如果你看到了这个，说明外部的 MD 文件没有加载成功。
+
+> **提示**：请确保你使用了本地服务器（如 VS Code Live Server）来运行此页面，否则浏览器可能会拦截文件读取。
+
+## 功能演示
+- **左侧写作，右侧预览**
+- 支持标准的 Markdown 语法
+- 支持代码高亮
+
+\`\`\`javascript
+console.log("Hello World");
+\`\`\`
+
+## 关于图片
+请将图片放在项目文件夹中，例如 \`assets/images/\`，然后使用相对路径引入：
+
+\`![示例图片](assets/images/sample.jpg)\`
+`;
   
+  // 尝试加载演示文件
   fetch("posts/2026-01-12-demo.md")
     .then(res => {
-      if (!res.ok) throw new Error("File not found");
+      // 如果找不到文件 (404)，抛出错误进入 catch
+      if (!res.ok) throw new Error("File not found: " + res.statusText);
       return res.text();
     })
     .then(text => {
+      // 成功加载
       currentMarkdown = text;
       renderView();
     })
     .catch(err => {
-      console.warn("加载失败，使用默认文本", err);
+      // 加载失败，使用默认文本
+      console.warn("无法加载外部 Markdown 文件，使用默认内容。", err);
       currentMarkdown = defaultText;
       renderView();
     });

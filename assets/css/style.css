@@ -1,149 +1,211 @@
+/* --- 全局设置 --- */
 :root {
-  --bg-color: #f4f6f8;
+  --bg-color: #f6f8fa; /* 更柔和的浅灰色背景 */
   --card-bg: #ffffff;
   --primary-color: #0969da;
-  --text-color: #24292f;
+  --text-primary: #24292f;
+  --text-secondary: #57606a;
   --border-color: #d0d7de;
+  --header-height: 64px;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  /* 使用更现代的系统字体栈 */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
   margin: 0;
   padding: 0;
   background-color: var(--bg-color);
-  color: var(--text-color);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased; /* 让字体在 Mac 上更平滑 */
 }
 
-/* Header */
+/* --- 顶部导航栏优化 --- */
 header {
-  background: #24292f;
-  color: white;
-  padding: 1rem 0;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background: rgba(255, 255, 255, 0.95); /* 半透明白色 */
+  backdrop-filter: blur(12px); /* 毛玻璃效果 */
+  padding: 0;
+  height: var(--header-height);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* 柔和的底部阴影 */
+  position: sticky; /* 粘性定位 */
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
 }
 
 .header-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
 }
 
-h1 { margin: 0; font-size: 1.5rem; }
+h1 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+/* 给标题加个小图标装饰 */
+h1::before {
+    content: "📓";
+    font-size: 1.4rem;
+}
 
-/* Layout Grid */
+/* --- 布局网格 --- */
 .container {
   display: grid;
-  grid-template-columns: 3fr 1fr; /* 左侧3份，右侧1份 */
-  gap: 20px;
+  grid-template-columns: minmax(0, 3fr) 280px; /* 左侧自适应，右侧固定宽度 */
+  gap: 24px;
   max-width: 1200px;
-  margin: 20px auto;
-  padding: 0 20px;
-  align-items: start; /* 让侧边栏高度不被拉伸 */
+  margin: 30px auto;
+  padding: 0 24px;
+  align-items: start;
 }
 
-/* Card Style */
+/* --- 卡片样式通用优化 --- */
 .card {
   background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  padding: 20px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  /* 移除生硬的边框，改用柔和的复合阴影 */
+  border: none;
+  border-radius: 12px; /* 更大的圆角 */
+  padding: 24px;
+  box-shadow: 0 3px 6px rgba(140, 149, 161, 0.05), 0 8px 24px rgba(140, 149, 161, 0.1);
+  transition: all 0.2s ease-in-out;
 }
 
-/* Sidebar Styling */
+/* 侧边栏卡片悬停效果 */
+.sidebar-column .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(140, 149, 161, 0.08), 0 12px 32px rgba(140, 149, 161, 0.12);
+}
+
+
+/* --- 解决 Markdown 黑底问题 --- */
+/* 强制 Markdown 内容区域为白底黑字 */
+.markdown-body {
+  box-sizing: border-box;
+  min-width: 200px;
+  max-width: 980px;
+  margin: 0 auto;
+  /* 核心修复：强制白色背景和深色文字 */
+  background-color: #ffffff !important;
+  color: #24292f !important;
+  padding: 10px 5px !important; /* 调整内部边距 */
+}
+
+/* 阅读模式卡片特殊处理，去掉内边距以便 markdown-body 撑满 */
+#view-mode.card {
+    padding: 30px;
+}
+
+
+/* --- 侧边栏样式 --- */
 .profile-card {
   text-align: center;
 }
 
 .avatar img {
-  width: 100px;
-  height: 100px;
+  width: 110px;
+  height: 110px;
   border-radius: 50%;
-  border: 3px solid #eee;
-  margin-bottom: 10px;
+  /* 给头像加一个渐变边框环 */
+  background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 4px; 
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  margin-bottom: 16px;
 }
 
-.bio { color: #666; font-size: 0.9rem; }
-.social-links { list-style: none; padding: 0; }
-.social-links li { margin: 5px 0; }
-.social-links a { text-decoration: none; color: var(--primary-color); }
+.profile-card h2 { margin: 10px 0 5px; font-size: 1.4rem; }
+.bio { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 20px;}
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    list-style: none; padding: 0;
+    margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px;
+}
+.social-links a {
+    text-decoration: none; color: var(--text-secondary); font-weight: 500;
+    transition: color 0.2s;
+}
+.social-links a:hover { color: var(--primary-color); }
 
-.info-card { margin-top: 20px; }
-.info-card ul { padding-left: 20px; }
+.info-card h3 {
+    font-size: 1rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px;
+}
+.info-card ul { padding-left: 0; list-style: none; }
+.info-card li { margin-bottom: 12px; }
+.info-card a {
+    text-decoration: none; color: var(--primary-color); font-weight: 500; display: flex; align-items: center; gap: 8px;
+}
+.info-card a::before { content: "📄"; font-size: 0.9rem;}
+.info-card a:hover { text-decoration: underline; }
 
-/* Editor Styling */
-.hidden { display: none; }
+/* --- 编辑器样式 --- */
+.hidden { display: none !important; }
 
 .toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 10px;
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color);
+  font-weight: 600; color: var(--text-primary);
 }
 
 .editor-layout {
   display: flex;
-  height: 70vh; /* 固定编辑器高度 */
+  height: 75vh; /* 增加编辑器高度 */
   border: 1px solid var(--border-color);
-  border-radius: 4px;
+  border-radius: 8px;
+  overflow: hidden; /* 确保圆角内内容不溢出 */
 }
 
 textarea {
-  width: 50%;
-  height: 100%;
-  border: none;
+  width: 50%; height: 100%; border: none;
   border-right: 1px solid var(--border-color);
-  padding: 15px;
+  padding: 20px;
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-  font-size: 14px;
-  resize: none; /* 禁止拖动大小 */
-  outline: none;
-  box-sizing: border-box;
-  background-color: #fefefe;
+  font-size: 15px; line-height: 1.6;
+  resize: none; outline: none; box-sizing: border-box;
+  background-color: #fcfcfc;
 }
+textarea:focus { background-color: #fff; }
 
 #preview {
-  width: 50%;
-  height: 100%;
-  padding: 15px;
-  overflow-y: auto;
-  box-sizing: border-box;
+  width: 50%; height: 100%; padding: 20px 30px;
+  overflow-y: auto; box-sizing: border-box;
   background-color: #fff;
 }
 
-/* Buttons */
+/* --- 按钮优化 --- */
 .btn {
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: opacity 0.2s;
+  border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;
+  font-weight: 600; font-size: 0.9rem;
+  transition: all 0.2s;
+  display: inline-flex; align-items: center; gap: 6px;
 }
-.btn:hover { opacity: 0.9; }
-.primary { background: #0969da; color: white; }
+.btn:hover { transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+.btn:active { transform: translateY(0); }
+
+.primary {
+  background: linear-gradient(180deg, var(--primary-color), #085ed7);
+  color: white; border: 1px solid rgba(255,255,255,0.1);
+}
 .success { background: #2da44e; color: white; }
 .danger { background: #cf222e; color: white; }
-.info { background: #6e7781; color: white; }
+.info { background: #f3f4f6; color: var(--text-primary); border: 1px solid var(--border-color);}
+.info:hover { background: #ebecf0; }
 
-/* Responsive: Mobile */
-@media (max-width: 768px) {
-  .container {
-    grid-template-columns: 1fr; /* 手机上变为单列 */
-  }
-  .editor-layout {
-    flex-direction: column;
-    height: 80vh;
-  }
-  textarea, #preview {
-    width: 100%;
-    height: 50%;
-    border-right: none;
-    border-bottom: 1px solid var(--border-color);
-  }
+
+/* --- 响应式 --- */
+@media (max-width: 850px) {
+  .container { grid-template-columns: 1fr; }
+  .sidebar-column { order: -1; /* 手机上把侧边栏提到最前面或者保留在下面 */ }
+  .editor-layout { flex-direction: column; height: 85vh; }
+  textarea, #preview { width: 100%; height: 50%; border-right: none; border-bottom: 1px solid var(--border-color); }
 }

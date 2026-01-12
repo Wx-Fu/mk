@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>我的 Markdown 空间</title>
+  <title>📒笔记记录</title>
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css">
 </head>
@@ -11,58 +11,60 @@
 
 <header>
   <div class="header-content">
-    <h1>📘 My Digital Garden</h1>
-    <button id="editBtn" class="btn primary">✏️ 编辑当前文章</button>
+    <h1>My Digital Garden</h1>
+    <button id="editBtn" class="btn primary">✏️ 编辑文章</button>
   </div>
 </header>
 
 <div class="container">
   
   <div class="main-column">
-    
     <main id="view-mode" class="card">
       <article id="content" class="markdown-body">
-        <p class="loading">正在加载文章...</p>
+        <div style="text-align: center; padding: 50px; color: #666;">
+            ⏳ 正在加载文章内容...<br>
+            <small>(如果长时间未加载，请确保使用了 Live Server 运行)</small>
+        </div>
       </article>
     </main>
 
     <main id="edit-mode" class="card hidden">
       <div class="toolbar">
-        <span>Markdown 编辑器</span>
-        <div class="actions">
-          <button id="saveBtn" class="btn success">保存 (预览)</button>
-          <button id="downloadBtn" class="btn info">⬇️ 下载.md</button>
-          <button id="cancelBtn" class="btn danger">取消</button>
+        <span>📝 Markdown 编辑器</span>
+        <div class="actions" style="display: flex; gap: 8px;">
+          <button id="saveBtn" class="btn success">✅ 完成预览</button>
+          <button id="downloadBtn" class="btn info">📥 下载 .md</button>
+          <button id="cancelBtn" class="btn danger">✕ 取消</button>
         </div>
       </div>
       <div class="editor-layout">
-        <textarea id="markdown-input" placeholder="# 在这里开始写作..."></textarea>
+        <textarea id="markdown-input" placeholder="# 在这里开始写作...\n\n你可以使用 Markdown 语法。\n\n插入图片示例：\n![图片描述](assets/images/your-image.jpg)"></textarea>
         <div id="preview" class="markdown-body"></div>
       </div>
     </main>
-
   </div>
 
   <aside class="sidebar-column">
     <div class="profile-card card">
       <div class="avatar">
-        <img src="https://ui-avatars.com/api/?name=Me&background=random&size=128" alt="Avatar">
+        <img src="https://i.pravatar.cc/300?img=12" alt="Avatar">
       </div>
-      <h2>你的名字</h2>
-      <p class="bio">全栈开发者 / 技术博主 / 咖啡爱好者</p>
-      <hr>
+      <h2>Wenxin Fu</h2>
+      <p class="bio">BUPT | Diffusion Model | Avatar</p>
+      
       <ul class="social-links">
         <li><a href="#">Github</a></li>
         <li><a href="#">Twitter</a></li>
-        <li><a href="#">Email</a></li>
+        <li><a href="#">Blog</a></li>
       </ul>
     </div>
 
     <div class="info-card card">
-      <h3>📁 文章归档</h3>
+      <h3>📁 归档与链接</h3>
       <ul>
-        <li><a href="#">2026-01-12 Demo</a></li>
-        <li><a href="#">关于本站</a></li>
+        <li><a href="#">2026-01-12 演示文档</a></li>
+        <li><a href="#">学习笔记 (WIP)</a></li>
+        <li><a href="#">关于本站设计</a></li>
       </ul>
     </div>
   </aside>
