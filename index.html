@@ -1,29 +1,73 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>Markdown Blog Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的 Markdown 空间</title>
   <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css">
 </head>
 <body>
 
 <header>
-  <h1>📘 Markdown Blog</h1>
-  <button id="editBtn">Edit</button>
+  <div class="header-content">
+    <h1>📘 My Digital Garden</h1>
+    <button id="editBtn" class="btn primary">✏️ 编辑当前文章</button>
+  </div>
 </header>
 
-<main id="view-mode">
-  <article id="content"></article>
-</main>
+<div class="container">
+  
+  <div class="main-column">
+    
+    <main id="view-mode" class="card">
+      <article id="content" class="markdown-body">
+        <p class="loading">正在加载文章...</p>
+      </article>
+    </main>
 
-<main id="edit-mode" class="hidden">
-  <div class="editor">
-    <textarea id="markdown-input"></textarea>
-    <div id="preview"></div>
+    <main id="edit-mode" class="card hidden">
+      <div class="toolbar">
+        <span>Markdown 编辑器</span>
+        <div class="actions">
+          <button id="saveBtn" class="btn success">保存 (预览)</button>
+          <button id="downloadBtn" class="btn info">⬇️ 下载.md</button>
+          <button id="cancelBtn" class="btn danger">取消</button>
+        </div>
+      </div>
+      <div class="editor-layout">
+        <textarea id="markdown-input" placeholder="# 在这里开始写作..."></textarea>
+        <div id="preview" class="markdown-body"></div>
+      </div>
+    </main>
+
   </div>
-  <button id="saveBtn">Save</button>
-  <button id="cancelBtn">Cancel</button>
-</main>
+
+  <aside class="sidebar-column">
+    <div class="profile-card card">
+      <div class="avatar">
+        <img src="https://ui-avatars.com/api/?name=Me&background=random&size=128" alt="Avatar">
+      </div>
+      <h2>你的名字</h2>
+      <p class="bio">全栈开发者 / 技术博主 / 咖啡爱好者</p>
+      <hr>
+      <ul class="social-links">
+        <li><a href="#">Github</a></li>
+        <li><a href="#">Twitter</a></li>
+        <li><a href="#">Email</a></li>
+      </ul>
+    </div>
+
+    <div class="info-card card">
+      <h3>📁 文章归档</h3>
+      <ul>
+        <li><a href="#">2026-01-12 Demo</a></li>
+        <li><a href="#">关于本站</a></li>
+      </ul>
+    </div>
+  </aside>
+
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
 <script src="assets/js/app.js"></script>
