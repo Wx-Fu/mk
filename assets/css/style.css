@@ -146,3 +146,25 @@ header {
   .sidebar { order: -1; border-bottom: 1px solid #eee; padding-bottom: 20px; }
   .profile-avatar img { width: 100px; height: 100px; }
 }
+
+/* 专门控制头像图片的样式 */
+#avatar-img {
+  /* 1. 强制限制大小 (推荐 140px 到 180px 之间) */
+  width: 140px;
+  height: 140px;
+
+  /* 2. 关键属性：防止变形 */
+  /* cover 表示：填满盒子，多余部分自动裁剪掉，而不会把人脸压扁或拉长 */
+  object-fit: cover; 
+  
+  /* 3. 形状设置 */
+  /* 如果想要圆形头像，用 50% */
+  border-radius: 50%; 
+  /* 如果想要圆角矩形头像，用 8px */
+  /* border-radius: 8px; */
+
+  /* 4. 装饰（可选） */
+  border: 1px solid #e1e4e8; /* 灰色细边框 */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* 轻微阴影 */
+  display: block; /* 防止底部出现莫名其妙的空隙 */
+}
