@@ -9,19 +9,19 @@ const md = window.markdownit({
 const posts = [
   {
     id: "demo-1",
-    title: "Understanding Diffusion Models",
+    title: "demo",
     date: "2026-01-12",
     tags: ["Diffusion", "Generative AI"],
     file: "posts/diffusion-note.md",
-    excerpt: "A deep dive into the forward and reverse processes of DDPM and DDIM..."
+    excerpt: "understanding"
   },
   {
     id: "demo-2",
-    title: "EMO-Avatar Paper Review",
+    title: "demo2",
     date: "2025-12-28",
     tags: ["Avatar", "Multimodal"],
     file: "posts/emo-avatar.md",
-    excerpt: "Notes on the EMO-Avatar framework: orchestrating emotional support via LLM agents."
+    excerpt: "Notes on something."
   }
 ];
 
