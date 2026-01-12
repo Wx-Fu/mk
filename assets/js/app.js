@@ -1,14 +1,16 @@
-// 初始化 markdown-it，开启 HTML 标签支持和链接自动转换
+// 初始化 markdown-it
 const md = window.markdownit({
   html: true,
   linkify: true,
   typographer: true
 });
 
-// DOM 元素获取
+// 获取元素
 const viewMode = document.getElementById("view-mode");
 const editMode = document.getElementById("edit-mode");
 const content = document.getElementById("content");
+const input = document.getElementById("markdown-input");
+const preview = document.getElementById("preview");
 
 // 按钮
 const editBtn = document.getElementById("editBtn");
@@ -16,112 +18,103 @@ const saveBtn = document.getElementById("saveBtn");
 const cancelBtn = document.getElementById("cancelBtn");
 const downloadBtn = document.getElementById("downloadBtn");
 
-// 编辑器元素
-const input = document.getElementById("markdown-input");
-const preview = document.getElementById("preview");
-
-// 全局变量存储当前 Markdown
 let currentMarkdown = "";
 
+// --- 核心逻辑 ---
+
+// 1. 初始化
 function init() {
-  // 设置一个默认的欢迎文本，当 fetch 失败时显示
-  const defaultText = `# 欢迎来到我的 Markdown 空间
+  // 定义一个默认的模版，当找不到文件时显示这个
+  // 这模仿了学术主页的 Publications 列表风格
+  const defaultContent = `
+### Publications
 
-这里是默认显示的内容。如果你看到了这个，说明外部的 MD 文件没有加载成功。
+**EMO-Avatar: An LLM-Agent-Orchestrated Framework for Multimodal Emotional Support** *Keqi Chen, **Wenxin Fu**, Qihang Lu, et al.* MM 2025  
+[PDF] [Code] [Project Page]
 
-> **提示**：请确保你使用了本地服务器（如 VS Code Live Server）来运行此页面，否则浏览器可能会拦截文件读取。
+---
 
-## 功能演示
-- **左侧写作，右侧预览**
-- 支持标准的 Markdown 语法
-- 支持代码高亮
+**Another Awesome Paper Title** *Wenxin Fu, Co-author Name* CVPR 2024 (In submission)  
+To address the empathy gap in chatbots, we propose...
 
-\`\`\`javascript
-console.log("Hello World");
-\`\`\`
+### Recent Posts
 
-## 关于图片
-请将图片放在项目文件夹中，例如 \`assets/images/\`，然后使用相对路径引入：
-
-\`![示例图片](assets/images/sample.jpg)\`
+- [2026-01-12] My first update on this static blog
+- [2025-12-20] Year end summary
 `;
-  
-  // 尝试加载演示文件
+
+  // 尝试去 fetch 你的文件 (假设你要展示 demo.md)
+  // 如果你的 posts 文件夹是空的，这里会失败，然后自动加载上面的 defaultContent
   fetch("posts/2026-01-12-demo.md")
     .then(res => {
-      // 如果找不到文件 (404)，抛出错误进入 catch
-      if (!res.ok) throw new Error("File not found: " + res.statusText);
+      if (!res.ok) throw new Error("File not found");
       return res.text();
     })
     .then(text => {
-      // 成功加载
       currentMarkdown = text;
-      renderView();
+      render();
     })
     .catch(err => {
-      // 加载失败，使用默认文本
-      console.warn("无法加载外部 Markdown 文件，使用默认内容。", err);
-      currentMarkdown = defaultText;
-      renderView();
+      console.log("No external post found, loading default template.");
+      currentMarkdown = defaultContent;
+      render();
     });
 }
 
-// 渲染阅读视图
-function renderView() {
+// 2. 渲染函数
+function render() {
   content.innerHTML = md.render(currentMarkdown);
+  input.value = currentMarkdown;
+  preview.innerHTML = md.render(currentMarkdown);
 }
 
-// 2. 切换到编辑模式
+// 3. 交互逻辑
+
+// 进入编辑模式
 editBtn.onclick = () => {
   viewMode.classList.add("hidden");
   editMode.classList.remove("hidden");
-  editBtn.style.display = 'none'; // 编辑时隐藏顶部编辑按钮
-
-  input.value = currentMarkdown;
-  updatePreview();
+  editBtn.style.display = "none"; // 隐藏顶部的编辑按钮
+  render(); // 刷新一下预览
 };
 
-// 3. 实时预览逻辑
-input.oninput = updatePreview;
+// 实时预览
+input.oninput = () => {
+  preview.innerHTML = md.render(input.value);
+};
 
-function updatePreview() {
-  const text = input.value;
-  preview.innerHTML = md.render(text);
-}
-
-// 4. 保存（更新内存并返回阅读模式）
+// 保存（这里是模拟保存，实际上是退回预览模式）
 saveBtn.onclick = () => {
   currentMarkdown = input.value;
-  renderView();
-  exitEditMode();
-};
-
-// 5. 取消（放弃修改）
-cancelBtn.onclick = exitEditMode;
-
-function exitEditMode() {
+  content.innerHTML = md.render(currentMarkdown);
+  
+  // 切换回阅读模式
   editMode.classList.add("hidden");
   viewMode.classList.remove("hidden");
-  editBtn.style.display = 'block';
-}
+  editBtn.style.display = "inline-flex";
+};
 
-// 6. 新增功能：下载 .md 文件
-// 因为这是静态页面，不能直接写入服务器，所以提供下载，让你手动覆盖文件
+// 取消编辑
+cancelBtn.onclick = () => {
+  editMode.classList.add("hidden");
+  viewMode.classList.remove("hidden");
+  editBtn.style.display = "inline-flex";
+  // 恢复之前的内容
+  input.value = currentMarkdown;
+};
+
+// 下载功能
 downloadBtn.onclick = () => {
   const text = input.value;
   const blob = new Blob([text], { type: "text/markdown" });
   const url = URL.createObjectURL(blob);
-  
   const a = document.createElement("a");
   a.href = url;
-  // 生成文件名，例如：post-时间戳.md
-  a.download = `post-${new Date().toISOString().slice(0,10)}.md`;
+  a.download = "content.md";
   document.body.appendChild(a);
   a.click();
-  
   document.body.removeChild(a);
-  URL.revokeObjectURL(url);
 };
 
-// 启动
+// 启动应用
 init();

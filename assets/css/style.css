@@ -1,211 +1,251 @@
-/* --- 全局设置 --- */
+/* --- 基础变量：学术极简风 --- */
 :root {
-  --bg-color: #f6f8fa; /* 更柔和的浅灰色背景 */
-  --card-bg: #ffffff;
-  --primary-color: #0969da;
-  --text-primary: #24292f;
-  --text-secondary: #57606a;
-  --border-color: #d0d7de;
-  --header-height: 64px;
+  --bg-body: #f9f9f9;       /* 整体背景极浅的灰，突出中间的白卡片 */
+  --bg-card: #ffffff;
+  --text-main: #111111;     /* 接近纯黑 */
+  --text-sub: #555555;      /* 次级文字灰色 */
+  --accent-color: #24292f;  /* GitHub 黑 */
+  --border-color: #eaeaea;
+  --header-height: 60px;
 }
 
 body {
-  /* 使用更现代的系统字体栈 */
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  background-color: var(--bg-body);
+  color: var(--text-main);
   margin: 0;
   padding: 0;
-  background-color: var(--bg-color);
-  color: var(--text-primary);
-  -webkit-font-smoothing: antialiased; /* 让字体在 Mac 上更平滑 */
+  line-height: 1.6;
 }
 
-/* --- 顶部导航栏优化 --- */
+/* --- Header --- */
 header {
-  background: rgba(255, 255, 255, 0.95); /* 半透明白色 */
-  backdrop-filter: blur(12px); /* 毛玻璃效果 */
-  padding: 0;
+  background: #ffffff;
+  border-bottom: 1px solid var(--border-color);
   height: var(--header-height);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* 柔和的底部阴影 */
-  position: sticky; /* 粘性定位 */
+  position: sticky;
   top: 0;
   z-index: 100;
   display: flex;
   align-items: center;
 }
 
-.header-content {
-  max-width: 1200px;
+.header-inner {
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 20px;
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
 }
 
-h1 {
-  margin: 0;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-/* 给标题加个小图标装饰 */
-h1::before {
-    content: "📓";
-    font-size: 1.4rem;
+.brand .name {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--text-main);
 }
 
-/* --- 布局网格 --- */
+.brand .role {
+  color: var(--text-sub);
+  font-weight: 400;
+  font-size: 1rem;
+  margin-left: 8px;
+}
+
+/* --- 布局 --- */
 .container {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 0 20px;
   display: grid;
-  grid-template-columns: minmax(0, 3fr) 280px; /* 左侧自适应，右侧固定宽度 */
-  gap: 24px;
-  max-width: 1200px;
-  margin: 30px auto;
-  padding: 0 24px;
+  grid-template-columns: 1fr 300px; /* 左侧自适应，右侧固定300px */
+  gap: 40px;
   align-items: start;
 }
 
-/* --- 卡片样式通用优化 --- */
-.card {
-  background: var(--card-bg);
-  /* 移除生硬的边框，改用柔和的复合阴影 */
-  border: none;
-  border-radius: 12px; /* 更大的圆角 */
-  padding: 24px;
-  box-shadow: 0 3px 6px rgba(140, 149, 161, 0.05), 0 8px 24px rgba(140, 149, 161, 0.1);
-  transition: all 0.2s ease-in-out;
+/* --- 左侧内容区 --- */
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
 }
 
-/* 侧边栏卡片悬停效果 */
-.sidebar-column .card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(140, 149, 161, 0.08), 0 12px 32px rgba(140, 149, 161, 0.12);
-}
-
-
-/* --- 解决 Markdown 黑底问题 --- */
-/* 强制 Markdown 内容区域为白底黑字 */
 .markdown-body {
-  box-sizing: border-box;
-  min-width: 200px;
-  max-width: 980px;
-  margin: 0 auto;
-  /* 核心修复：强制白色背景和深色文字 */
-  background-color: #ffffff !important;
+  background: transparent !important; /* 确保不覆盖背景 */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif !important;
   color: #24292f !important;
-  padding: 10px 5px !important; /* 调整内部边距 */
 }
 
-/* 阅读模式卡片特殊处理，去掉内边距以便 markdown-body 撑满 */
-#view-mode.card {
-    padding: 30px;
+/* 强制覆盖 markdown-css 可能的黑底设置 */
+@media (prefers-color-scheme: dark) {
+  .markdown-body {
+    background-color: #fff !important;
+    color: #24292f !important;
+  }
 }
 
-
-/* --- 侧边栏样式 --- */
-.profile-card {
+.empty-state {
+  padding: 40px;
+  background: #fff;
+  border: 1px dashed #ccc;
+  border-radius: 8px;
   text-align: center;
+  color: #666;
 }
 
-.avatar img {
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;
-  /* 给头像加一个渐变边框环 */
-  background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 4px; 
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  margin-bottom: 16px;
-}
-
-.profile-card h2 { margin: 10px 0 5px; font-size: 1.4rem; }
-.bio { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 20px;}
-.social-links {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    list-style: none; padding: 0;
-    margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px;
-}
-.social-links a {
-    text-decoration: none; color: var(--text-secondary); font-weight: 500;
-    transition: color 0.2s;
-}
-.social-links a:hover { color: var(--primary-color); }
-
-.info-card h3 {
-    font-size: 1rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px;
-}
-.info-card ul { padding-left: 0; list-style: none; }
-.info-card li { margin-bottom: 12px; }
-.info-card a {
-    text-decoration: none; color: var(--primary-color); font-weight: 500; display: flex; align-items: center; gap: 8px;
-}
-.info-card a::before { content: "📄"; font-size: 0.9rem;}
-.info-card a:hover { text-decoration: underline; }
-
-/* --- 编辑器样式 --- */
-.hidden { display: none !important; }
-
-.toolbar {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color);
-  font-weight: 600; color: var(--text-primary);
-}
-
-.editor-layout {
-  display: flex;
-  height: 75vh; /* 增加编辑器高度 */
+/* --- 右侧侧边栏 (Profile) --- */
+.profile-card {
+  background: #fff;
+  padding: 30px;
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  overflow: hidden; /* 确保圆角内内容不溢出 */
+  /* 参考图那样的轻微阴影 */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
-textarea {
-  width: 50%; height: 100%; border: none;
-  border-right: 1px solid var(--border-color);
-  padding: 20px;
-  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-  font-size: 15px; line-height: 1.6;
-  resize: none; outline: none; box-sizing: border-box;
-  background-color: #fcfcfc;
+.avatar-container {
+  text-align: right; /* 参考图里头像在右侧或者居中，这里做居中处理更通用 */
+  text-align: center;
+  margin-bottom: 20px;
 }
-textarea:focus { background-color: #fff; }
+
+.avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 8px; /* 稍微圆角，不必完全圆形 */
+  object-fit: cover;
+}
+
+.profile-name {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.profile-title {
+  margin: 5px 0;
+  font-size: 1.1rem;
+  color: #444;
+}
+
+.profile-school {
+  margin: 5px 0 20px 0;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.profile-tags {
+  margin-bottom: 20px;
+  font-size: 0.85rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+.profile-links {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.links-card {
+  margin-top: 30px;
+}
+.links-card h3 { font-size: 1rem; margin-bottom: 10px;}
+.links-card ul { list-style: none; padding: 0; }
+.links-card li { margin-bottom: 8px; }
+.links-card a { color: #0969da; text-decoration: none; }
+.links-card a:hover { text-decoration: underline; }
+
+/* --- 按钮样式 (GitHub 风格) --- */
+.btn {
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 6px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: 0.2s;
+  border: 1px solid transparent;
+  text-decoration: none;
+  display: inline-block;
+}
+
+/* 黑色实心按钮 */
+.btn-black {
+  background-color: #24292f;
+  color: #ffffff;
+}
+.btn-black:hover { background-color: #111; }
+
+/* 黑色小按钮 */
+.btn-black-sm {
+  background-color: #24292f;
+  color: #ffffff;
+  padding: 4px 12px;
+  font-size: 13px;
+  border-radius: 4px;
+}
+.btn-black-sm:hover { background-color: #000; }
+
+/* 描边按钮 */
+.btn-outline {
+  background-color: #fff;
+  border: 1px solid #d0d7de;
+  color: #24292f;
+}
+.btn-outline:hover { background-color: #f3f4f6; }
+
+/* 纯文字按钮 */
+.btn-text {
+  background: none;
+  color: #cf222e;
+}
+.btn-text:hover { background: rgba(207,34,46,0.1); }
+
+/* --- 编辑器区域 --- */
+.hidden { display: none; }
+
+.editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.editor-wrapper {
+  display: flex;
+  height: 70vh;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+}
+
+textarea#markdown-input {
+  width: 50%;
+  border: none;
+  border-right: 1px solid #ddd;
+  padding: 20px;
+  resize: none;
+  outline: none;
+  font-family: monospace;
+  font-size: 14px;
+  background: #fdfdfd;
+}
 
 #preview {
-  width: 50%; height: 100%; padding: 20px 30px;
-  overflow-y: auto; box-sizing: border-box;
-  background-color: #fff;
+  width: 50%;
+  padding: 20px;
+  overflow-y: auto;
+  background: #fff; /* 强制预览区白色 */
 }
 
-/* --- 按钮优化 --- */
-.btn {
-  border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;
-  font-weight: 600; font-size: 0.9rem;
-  transition: all 0.2s;
-  display: inline-flex; align-items: center; gap: 6px;
-}
-.btn:hover { transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-.btn:active { transform: translateY(0); }
-
-.primary {
-  background: linear-gradient(180deg, var(--primary-color), #085ed7);
-  color: white; border: 1px solid rgba(255,255,255,0.1);
-}
-.success { background: #2da44e; color: white; }
-.danger { background: #cf222e; color: white; }
-.info { background: #f3f4f6; color: var(--text-primary); border: 1px solid var(--border-color);}
-.info:hover { background: #ebecf0; }
-
-
-/* --- 响应式 --- */
-@media (max-width: 850px) {
+/* 移动端适配 */
+@media (max-width: 800px) {
   .container { grid-template-columns: 1fr; }
-  .sidebar-column { order: -1; /* 手机上把侧边栏提到最前面或者保留在下面 */ }
-  .editor-layout { flex-direction: column; height: 85vh; }
-  textarea, #preview { width: 100%; height: 50%; border-right: none; border-bottom: 1px solid var(--border-color); }
+  .sidebar { order: -1; margin-bottom: 20px; } /* 手机上把个人信息放上面 */
+  .editor-wrapper { flex-direction: column; }
+  textarea#markdown-input, #preview { width: 100%; height: 50%; }
 }

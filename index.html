@@ -3,69 +3,88 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>📒笔记记录</title>
+  <title>Wenxin Fu - Personal Page</title>
+  
   <link rel="stylesheet" href="assets/css/style.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown-light.min.css">
 </head>
 <body>
 
 <header>
-  <div class="header-content">
-    <h1>My Digital Garden</h1>
-    <button id="editBtn" class="btn primary">✏️ 编辑文章</button>
+  <div class="header-inner">
+    <div class="brand">
+      <span class="name">Wenxin Fu</span>
+      <span class="role">/ Master Student</span>
+    </div>
+    <nav>
+      <button id="editBtn" class="btn btn-black">
+        <svg height="16" viewBox="0 0 16 16" width="16" style="fill:white; margin-right:4px; vertical-align:text-bottom;"><path d="M11.013 1.427a1.75 1.75 0 012.474 0l1.086 1.086a1.75 1.75 0 010 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.928a.75.75 0 01-.927-.927l.928-3.251a2 2 0 01.445-.756l8.61-8.61z"></path></svg>
+        Edit Page
+      </button>
+    </nav>
   </div>
 </header>
 
 <div class="container">
   
-  <div class="main-column">
-    <main id="view-mode" class="card">
+  <div class="main-content">
+    
+    <section id="view-mode">
+      <div class="section-title">Publications & Posts</div>
       <article id="content" class="markdown-body">
-        <div style="text-align: center; padding: 50px; color: #666;">
-            ⏳ 正在加载文章内容...<br>
-            <small>(如果长时间未加载，请确保使用了 Live Server 运行)</small>
+        <div class="empty-state">
+          <p>Loading content...</p>
         </div>
       </article>
-    </main>
+    </section>
 
-    <main id="edit-mode" class="card hidden">
-      <div class="toolbar">
-        <span>📝 Markdown 编辑器</span>
-        <div class="actions" style="display: flex; gap: 8px;">
-          <button id="saveBtn" class="btn success">✅ 完成预览</button>
-          <button id="downloadBtn" class="btn info">📥 下载 .md</button>
-          <button id="cancelBtn" class="btn danger">✕ 取消</button>
+    <section id="edit-mode" class="hidden">
+      <div class="editor-header">
+        <div class="section-title">Markdown Editor</div>
+        <div class="editor-actions">
+            <button id="saveBtn" class="btn btn-black">Preview</button>
+            <button id="downloadBtn" class="btn btn-outline">Download .md</button>
+            <button id="cancelBtn" class="btn btn-text">Cancel</button>
         </div>
       </div>
-      <div class="editor-layout">
-        <textarea id="markdown-input" placeholder="# 在这里开始写作...\n\n你可以使用 Markdown 语法。\n\n插入图片示例：\n![图片描述](assets/images/your-image.jpg)"></textarea>
+      
+      <div class="editor-wrapper">
+        <textarea id="markdown-input" placeholder="# Title..."></textarea>
         <div id="preview" class="markdown-body"></div>
       </div>
-    </main>
+    </section>
+
   </div>
 
-  <aside class="sidebar-column">
-    <div class="profile-card card">
-      <div class="avatar">
-        <img src="https://i.pravatar.cc/300?img=12" alt="Avatar">
+  <aside class="sidebar">
+    <div class="profile-card">
+      <div class="avatar-container">
+        <img src="https://ui-avatars.com/api/?name=Wenxin+Fu&background=333&color=fff&size=200" alt="Profile" class="avatar">
       </div>
-      <h2>Wenxin Fu</h2>
-      <p class="bio">BUPT | Diffusion Model | Avatar</p>
       
-      <ul class="social-links">
-        <li><a href="#">Github</a></li>
-        <li><a href="#">Twitter</a></li>
-        <li><a href="#">Blog</a></li>
-      </ul>
+      <h1 class="profile-name">Wenxin Fu</h1>
+      <p class="profile-title">Master Student</p>
+      <p class="profile-school">Beijing University of Posts and Telecommunications</p>
+      
+      <div class="profile-tags">
+        <span>Audio-driven Human Animation</span>
+        <span>Diffusion Models</span>
+        <span>Multimodal Learning</span>
+      </div>
+
+      <div class="profile-links">
+        <a href="#" class="btn btn-black-sm">GitHub</a>
+        <a href="#" class="btn btn-black-sm">Google Scholar</a>
+      </div>
     </div>
 
-    <div class="info-card card">
-      <h3>📁 归档与链接</h3>
-      <ul>
-        <li><a href="#">2026-01-12 演示文档</a></li>
-        <li><a href="#">学习笔记 (WIP)</a></li>
-        <li><a href="#">关于本站设计</a></li>
-      </ul>
+    <div class="links-card">
+        <h3>Quick Links</h3>
+        <ul>
+            <li><a href="#">CV (Curriculum Vitae)</a></li>
+            <li><a href="#">Publications</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
     </div>
   </aside>
 
